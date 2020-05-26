@@ -23,7 +23,7 @@ cp -r <INSTALL DIRECTORY>/youtube_dl .
 sed -i.bak 's/import optparse/import optparse2 as optparse/' youtube_dl/options.py
 ```
 
-Then you can, **from the current directory**, dump the parsing options.
+Then you can, **from the current directory**, dump the parsing options: `python3 -m youtube_dl`
 
 Part of the output:
 

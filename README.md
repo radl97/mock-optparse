@@ -10,6 +10,10 @@ Copy `youtube_dl` lib from site-packages directory. On Linux, run:
 
 Modify optparse2.py to your own things.
 
+## Using the script
+
+`script` automatically downloads the given `youtube_dl` version and extracts it to the current directory.
+
 ## Example usage
 
 (Again, on Linux)

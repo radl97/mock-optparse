@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Downloads current version of youtube_dl, extracts the python module to youtube_dl/
+# TODO check if youtube_dl is already there, only update if the version is different?
+
+# Download from releases
+curl -L "https://github.com/ytdl-org/youtube-dl/archive/$(youtube-dl --version).zip" --output youtube-dl.zip
+
+# Extract package
+unzip youtube-dl.zip
+rm -rf youtube-dl.zip
+
+# File name scheme changes with version
+OUTPUT1="youtube-dl-$(youtube-dl --version)"
+mv "$OUTPUT1"/youtube_dl .
+
+rm -rf "$OUTPUT1"
+
+sed -i.bak 's/import optparse/import optparse2 as optparse/' youtube_dl/options.py
+
+# Test
+python3 main.py

@@ -14,6 +14,10 @@ class OptionGroup:
 	def add_option(self, *args, **argv):
 		self.data["options"].append({"positional": args, "named": argv})
 
+class FakeOpts:
+	def __init__(self):
+		self.verbose = False
+
 class OptionParser:
 	def __init__(self, **argv):
 		self.data = []
@@ -26,5 +30,4 @@ class OptionParser:
 	def parse_args(self, *args):
 		# This is called only after last option added.
 		# Dump output or do whatever :)
-		print(self.data)
-		exit(0)
+		return (FakeOpts(), None)

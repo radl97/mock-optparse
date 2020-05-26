@@ -8,20 +8,23 @@ class IndentedHelpFormatter:
 
 class OptionGroup:
 	def __init__(self, _, name):
-		print(name)
+		self.data = { "name": name, "options": [] }
 		pass
 
-	def add_option(self, a, b=None, c=None, **argv):
-		print(a, b, argv)
+	def add_option(self, *args, **argv):
+		self.data["options"].append({"positional": args, "named": argv})
 
 class OptionParser:
 	def __init__(self, **argv):
-		print(argv)
+		self.data = []
 		pass
 
-	def add_option_group(self, _):
+	def add_option_group(self, optionGroup):
+		self.data.append(optionGroup.data)
 		pass
 
-	def parse_args(self, _):
-		# Last option
+	def parse_args(self, *args):
+		# This is called only after last option added.
+		# Dump output or do whatever :)
+		print(self.data)
 		exit(0)

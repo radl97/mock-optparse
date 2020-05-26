@@ -16,7 +16,6 @@ fi
 
 echo Using "$CURRENT_YOUTUBE_DL" as executable 1>&2
 
-
 OUTPUT_DIRECTORY=youtube_dl/
 ZIP_OUTPUT="youtube-dl.zip"
 
@@ -103,8 +102,12 @@ fi
 
 ####
 
+# Check if youtube-dl is installed
+which "$CURRENT_YOUTUBE_DL" >/dev/null || { echo Executable not found 1>&2; exit 1; }
+
 # Extract installed youtube-dl version
 VERSION_STRING="`$CURRENT_YOUTUBE_DL --version`"
+
 
 # Zip file's main directory
 # File name scheme changes with version

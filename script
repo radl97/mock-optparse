@@ -19,8 +19,8 @@ rm -rf "$OUTPUT_DIRECTORY"
 # Download from releases
 curl -L "https://github.com/ytdl-org/youtube-dl/archive/${VERSION_STRING}.zip" --output "${ZIP_OUTPUT}"
 
-# Extract package
-unzip "$ZIP_OUTPUT"
+# Extract package, redirect output to stderr
+unzip "$ZIP_OUTPUT" 1>&2
 mv "$TMP_OUTPUT"/youtube_dl .
 
 # Use our mock module instead of optparse:

@@ -14,6 +14,20 @@ TMP_OUTPUT="youtube-dl-${VERSION_STRING}"
 
 # Extract files:
 
+if [ ! -f extract-version.py ]
+then
+
+cat > extract-version.py <<EOF
+from youtube_dl.version import __version__
+
+print(__version__)
+EOF
+
+fi
+
+if [ ! -f main.py ]
+then
+
 cat > main.py <<EOF
 from youtube_dl.options import parseOpts
 import json
@@ -33,6 +47,11 @@ for optionGroup in parser.data:
 			option['named']['callback'] = True
 print(json.dumps({'data': parser.data}))
 EOF
+
+fi
+
+if [ ! -f optparse2.py ]
+then
 
 cat > optparse2.py <<EOF
 # stubs for replacing optparse
@@ -70,6 +89,25 @@ class OptionParser:
 		return (FakeOpts(), None)
 EOF
 
+fi
+
+if [ -d "$OUTPUT_DIRECTORY" ]
+then
+
+	CURRENT_VERSION="$(python3 extract-version.py)"
+	if [ "x$CURRENT_VERSION" = "x$VERSION_STRING" ]
+	then
+		echo Already updated. 1&>2
+		python3 main.py
+		exit 0
+	else
+		echo Versions do not match: 1&>2
+		echo "$CURRENT_VERSION" 1&>2
+		echo "$VERSION_STRING" 1&>2
+	fi
+
+fi
+
 # Remove old output dir, if any
 # TODO check if youtube_dl is already there, only update if the version is different
 rm -rf "$OUTPUT_DIRECTORY"
@@ -89,7 +127,7 @@ sed -i.bak 's/import optparse/import optparse2 as optparse/' youtube_dl/options.
 # Test
 python3 main.py
 
+#rm main.py optparse2.py extract-version.py
 # Remove intermediate files
-rm main.py optparse2.py
 rm -rf "$TMP_OUTPUT"
 rm "$ZIP_OUTPUT"

@@ -1,22 +1,35 @@
 #!/bin/sh
 
 # Downloads current version of youtube_dl, extracts the python module to youtube_dl/
-# TODO check if youtube_dl is already there, only update if the version is different?
+
+OUTPUT_DIRECTORY=youtube_dl/
+VERSION_STRING="$(youtube-dl --version)"
+ZIP_OUTPUT="youtube-dl.zip"
+
+# Zip file's main directory
+# File name scheme changes with version
+TMP_OUTPUT="youtube-dl-${VERSION_STRING}"
+
+####
+
+# Remove old output dir, if any
+# TODO check if youtube_dl is already there, only update if the version is different
+rm -rf "$OUTPUT_DIRECTORY"
 
 # Download from releases
-curl -L "https://github.com/ytdl-org/youtube-dl/archive/$(youtube-dl --version).zip" --output youtube-dl.zip
+curl -L "https://github.com/ytdl-org/youtube-dl/archive/${VERSION_STRING}.zip" --output "${ZIP_OUTPUT}"
 
 # Extract package
-unzip youtube-dl.zip
-rm -rf youtube-dl.zip
+unzip "$ZIP_OUTPUT"
+mv "$TMP_OUTPUT"/youtube_dl .
 
-# File name scheme changes with version
-OUTPUT1="youtube-dl-$(youtube-dl --version)"
-mv "$OUTPUT1"/youtube_dl .
-
-rm -rf "$OUTPUT1"
-
+# Use our mock module instead of optparse:
+# (Old config is saved at options.py.bak)
 sed -i.bak 's/import optparse/import optparse2 as optparse/' youtube_dl/options.py
+
+# Remove intermediate files
+rm -rf "$TMP_OUTPUT"
+rm "$ZIP_OUTPUT"
 
 # Test
 python3 main.py

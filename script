@@ -1,14 +1,24 @@
 #!/bin/sh
 
-# Downloads current version of youtube_dl, extracts the python module to youtube_dl/
+# Downloads current installed version of youtube_dl, extracts the python module to youtube_dl/
+# After that, it dumps in JSON all the data of youtube_dl
+
+# Usage:
+# ./script [YoutubeDL-executable]
+# If left empty, it defaults to the standard youtube-dl
+
+CURRENT_YOUTUBE_DL=youtube-dl
+
+if [ ! -z "$1" ]
+then
+	CURRENT_YOUTUBE_DL="$1"
+fi
+
+echo Using "$CURRENT_YOUTUBE_DL" as executable 1>&2
+
 
 OUTPUT_DIRECTORY=youtube_dl/
-VERSION_STRING="$(youtube-dl --version)"
 ZIP_OUTPUT="youtube-dl.zip"
-
-# Zip file's main directory
-# File name scheme changes with version
-TMP_OUTPUT="youtube-dl-${VERSION_STRING}"
 
 ####
 
@@ -91,19 +101,28 @@ EOF
 
 fi
 
+####
+
+# Extract installed youtube-dl version
+VERSION_STRING="`$CURRENT_YOUTUBE_DL --version`"
+
+# Zip file's main directory
+# File name scheme changes with version
+TMP_OUTPUT="youtube-dl-${VERSION_STRING}"
+
 if [ -d "$OUTPUT_DIRECTORY" ]
 then
 
 	CURRENT_VERSION="$(python3 extract-version.py)"
 	if [ "x$CURRENT_VERSION" = "x$VERSION_STRING" ]
 	then
-		echo Already updated. 1&>2
+		echo Already updated. 1>&2
 		python3 main.py
 		exit 0
 	else
-		echo Versions do not match: 1&>2
-		echo "$CURRENT_VERSION" 1&>2
-		echo "$VERSION_STRING" 1&>2
+		echo Versions do not match: 1>&2
+		echo "$CURRENT_VERSION" 1>&2
+		echo "$VERSION_STRING" 1>&2
 	fi
 
 fi
